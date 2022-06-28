@@ -1,0 +1,34 @@
+import { database } from '../config'
+import { ref, set, child, get } from "firebase/database";
+
+
+export function addUser(first_name, last_name, id) {
+    set(ref(database, 'users/' + id), {
+        first_name: first_name,
+        last_name: last_name,
+        id: id
+    });
+//   console.log(first_name, last_name, user_name,id);
+} 
+
+export async function getUserById(id){
+    const dbRef = ref(database);
+   const snapshot =  await get(child(dbRef, `users/${id}`))
+    // .then(async (snapshot) => {
+        if (snapshot.exists()) {
+            console.log(snapshot.val());
+            const user = await snapshot.val()
+            return user
+        } else {
+            console.log("No data available");
+        }
+    // })
+    // .catch((error) => {
+    //     console.error(error);
+    // });
+}
+
+ export default {
+     addUser,
+     getUserById
+ }
