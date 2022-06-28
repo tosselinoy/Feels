@@ -1,7 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import axios from 'axios';
-import { addUser, getUserById } from './middleware/firebase/index'
+import { addMessage, addUser, getUserById } from './middleware/firebase/index'
 const app = express();
 const port = 80;
 const apiToken = `5398297485:AAFFQdUUo1owIXYBFzwa-xsTOtHH05xjsjk`;
@@ -19,6 +19,11 @@ app.post('/', (req, res) => {
           last_name:req.body.message.chat.last_name,
           id: req.body.message.chat.id
      };
+
+     const message = {
+          date: new Date(req.body.message.date),
+          text: req.body.message.text
+     }
      // const user_name = req.body.message.chat.username;
 
      // Regex for Hi
@@ -27,21 +32,31 @@ app.post('/', (req, res) => {
           axios.post(`${url}/sendMessage`,
                {
                     chat_id: user.id,
-                    text: `Hello back ${user.first_name} 👋 `
+                    text: `How you feel today?`
                })
                .then(async (response) => {
-                    const userTest = await getUserById(user.id);
-                    if(!userTest){
-                         console.log(userTest);
-                         addUser(user.first_name, user.last_name, user.id)
-                    }
+                    addMessage(message.date,message.text,user.id)
                     res.status(200).send(response);
                }).catch((error) => {
                     res.send(error);
                });
      } else {
-          // if no Hi present, just respond with 200 
-          res.status(200).send({});
+          axios.post(`${url}/sendMessage`,
+          {
+               chat_id: user.id,
+               text: `Hey ${user.first_name} 👋 
+               How you feel today?`
+          })
+          .then(async (response) => {
+               const userTest = await getUserById(user.id);
+               if(!userTest){
+                    addUser(user.first_name, user.last_name, user.id)
+               }
+               res.status(200).send(response);
+          }).catch((error) => {
+               res.send(error);
+          });
+          // res.status(200).send({});
      }
 });
 // Listening

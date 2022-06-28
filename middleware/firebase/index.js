@@ -11,6 +11,14 @@ export function addUser(first_name, last_name, id) {
 //   console.log(first_name, last_name, user_name,id);
 } 
 
+export function addMessage(date, text, id) {
+    set(ref(database, `users/${id}/messages/` + date), {
+        date: date,
+        text: text
+    });
+  console.log(date);
+} 
+
 export async function getUserById(id){
     const dbRef = ref(database);
     const snapshot =  await get(child(dbRef, `users/${id}`))
@@ -25,5 +33,6 @@ export async function getUserById(id){
 
  export default {
      addUser,
-     getUserById
+     getUserById,
+     addMessage
  }
