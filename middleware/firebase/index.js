@@ -16,7 +16,6 @@ export function addMessage(date, text, id) {
         date: date,
         text: text
     });
-  console.log(date);
 } 
 
 export async function getUserById(id){
